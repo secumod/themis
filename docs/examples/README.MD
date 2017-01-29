@@ -67,6 +67,8 @@ You might also enjoy tutorials with real-world projects:
 
 - [Securing websocket chat tutorial](https://cossacklabs.com/building-secure-chat) | [code](https://github.com/cossacklabs/mobile-websocket-example)
 - [Themis usability testing hackathon](https://cossacklabs.com/02-usability-testing.html) | [code](https://github.com/cossacklabs/themis-ux-testing) 
+- [0fc anonymous web chat](https://github.com/cossacklabs/0fc), pythemis (Python) + webthemis (C++ + HTML/JS): [blog post](https://cossacklabs.com/building-endtoend-webchat.html)
+- [sesto: secure storage](https://github.com/cossacklabs/sesto), pythemis (Python) + webthemis (C++ + HTML/JS): [blog post](https://cossacklabs.com/presenting-sesto.html)
 
 ### Tests
 

@@ -14,8 +14,6 @@
 * limitations under the License.
 */
 
-#ifdef SECURE_COMPARATOR_ENABLED
-
 #include "secure_comparator_t.h"
 #include <string.h>
 
@@ -440,7 +438,7 @@ themis_status_t secure_comparator_cleanup(secure_comparator_t *comp_ctx)
 		return THEMIS_INVALID_PARAMETER;
 	}
 
-	soter_hash_init(&(comp_ctx->hash_ctx), SOTER_HASH_SHA256);
+	soter_hash_cleanup(&(comp_ctx->hash_ctx));
 	memset(comp_ctx, 0, sizeof(secure_comparator_t));
 
 	return THEMIS_SUCCESS;
@@ -953,5 +951,3 @@ themis_status_t secure_comparator_get_result(const secure_comparator_t *comp_ctx
 
 	return comp_ctx->result;
 }
-
-#endif

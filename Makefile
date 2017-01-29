@@ -16,11 +16,15 @@
 
 #CC = clang
 SRC_PATH = src
-BIN_PATH = build
-OBJ_PATH = build/obj
+ifneq ($(BUILD_PATH),)
+	BIN_PATH = $(BUILD_PATH)
+else
+	BIN_PATH = build
+endif
+OBJ_PATH = $(BIN_PATH)/obj
 TEST_SRC_PATH = tests
-TEST_OBJ_PATH = build/tests/obj
-TEST_BIN_PATH = build/tests
+TEST_BIN_PATH = $(BIN_PATH)/tests
+TEST_OBJ_PATH = $(TEST_BIN_PATH)/obj
 
 CFLAGS += -I$(SRC_PATH) -I$(SRC_PATH)/wrappers/themis/ -I/usr/local/include -fPIC 
 LDFLAGS += -L/usr/local/lib
@@ -29,7 +33,7 @@ NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
 ERROR_COLOR=\033[31;01m
 WARN_COLOR=\033[33;01m
- 
+
 OK_STRING=$(OK_COLOR)[OK]$(NO_COLOR)
 ERROR_STRING=$(ERROR_COLOR)[ERRORS]$(NO_COLOR)
 WARN_STRING=$(WARN_COLOR)[WARNINGS]$(NO_COLOR)
@@ -68,6 +72,9 @@ ifeq ($(ENGINE),openssl)
 else ifeq ($(ENGINE),libressl)
 	CRYPTO_ENGINE_DEF = LIBRESSL	
 	CRYPTO_ENGINE_PATH=openssl
+else ifeq ($(ENGINE), boringssl)
+	CRYPTO_ENGINE_DEF = BORINGSSL
+	CRYPTO_ENGINE_PATH=boringssl
 else
 	ERROR = $(error error: engine $(ENGINE) unsupported...)
 endif
@@ -75,7 +82,7 @@ endif
 #end of engine selection block
 
 CRYPTO_ENGINE = $(SRC_PATH)/soter/$(CRYPTO_ENGINE_PATH)
-CFLAGS += -D$(CRYPTO_ENGINE_DEF)
+CFLAGS += -D$(CRYPTO_ENGINE_DEF) -DCRYPTO_ENGINE_PATH=$(CRYPTO_ENGINE_PATH)
 
 ifneq ($(ENGINE_INCLUDE_PATH),)
 	CRYPTO_ENGINE_INCLUDE_PATH = $(ENGINE_INCLUDE_PATH)
@@ -118,8 +125,6 @@ ifneq ("$(wildcard src/wrappers/themis/php/Makefile)","")
 PHP_THEMIS_INSTALL = 1
 endif
 
-NODE_VERSION := $(shell node --version 2>/dev/null)
-
 SHARED_EXT = so
 
 UNAME=$(shell uname)
@@ -150,13 +155,6 @@ ifdef DEBUG
 	CFLAGS += -DDEBUG -g
 endif
 
-ifdef SECURE_COMPARATOR
-ifeq ($(SECURE_COMPARATOR),enable)
-CFLAGS += -DSECURE_COMPARATOR_ENABLED
-SECURE_COMPARATOR_ENABLED = enable
-endif
-endif
-
 # Should pay attention to warnings (some may be critical for crypto-enabled code (ex. signed-unsigned mismatch)
 CFLAGS += -Werror -Wno-switch
 
@@ -174,6 +172,7 @@ ifdef PHP_VERSION
 	@echo -n "make tests for phpthemis "
 	@echo "php -c tests/phpthemis/php.ini ./tests/tools/phpunit.phar ./tests/phpthemis/scell_test.php" > ./$(BIN_PATH)/tests/phpthemis_test.sh
 	@echo "php -c tests/phpthemis/php.ini ./tests/tools/phpunit.phar ./tests/phpthemis/smessage_test.php" >> ./$(BIN_PATH)/tests/phpthemis_test.sh
+	@echo "php -c tests/phpthemis/php.ini ./tests/tools/phpunit.phar ./tests/phpthemis/ssession_test.php" >> ./$(BIN_PATH)/tests/phpthemis_test.sh
 	@chmod a+x ./$(BIN_PATH)/tests/phpthemis_test.sh
 	@$(PRINT_OK_)
 endif
@@ -182,9 +181,7 @@ ifdef RUBY_GEM_VERSION
 	@echo "ruby ./tests/rubythemis/scell_test.rb" > ./$(BIN_PATH)/tests/rubythemis_test.sh
 	@echo "ruby ./tests/rubythemis/smessage_test.rb" >> ./$(BIN_PATH)/tests/rubythemis_test.sh
 	@echo "ruby ./tests/rubythemis/ssession_test.rb" >> ./$(BIN_PATH)/tests/rubythemis_test.sh
-ifdef SECURE_COMPARATOR_ENABLED
 	@echo "ruby ./tests/rubythemis/scomparator_test.rb" >> ./$(BIN_PATH)/tests/rubythemis_test.sh
-endif
 	@chmod a+x ./$(BIN_PATH)/tests/rubythemis_test.sh
 	@$(PRINT_OK_)
 endif
@@ -193,9 +190,7 @@ ifdef PYTHON_VERSION
 	@echo "python ./tests/pythemis/scell_test.py" > ./$(BIN_PATH)/tests/pythemis_test.sh
 	@echo "python ./tests/pythemis/smessage_test.py" >> ./$(BIN_PATH)/tests/pythemis_test.sh
 	@echo "python ./tests/pythemis/ssession_test.py" >> ./$(BIN_PATH)/tests/pythemis_test.sh
-ifdef SECURE_COMPARATOR_ENABLED
 	@echo "python ./tests/pythemis/scomparator_test.py" >> ./$(BIN_PATH)/tests/pythemis_test.sh
-endif
 ifdef PYTHON3_VERSION
 	@echo "echo Python3 $(PYTHON3_VERSION) tests" >> ./$(BIN_PATH)/tests/pythemis_test.sh
 	@echo "echo ----- pythemis secure cell tests----" >> ./$(BIN_PATH)/tests/pythemis_test.sh
@@ -204,21 +199,20 @@ ifdef PYTHON3_VERSION
 	@echo "python3 ./tests/pythemis/smessage_test.py" >> ./$(BIN_PATH)/tests/pythemis_test.sh
 	@echo "echo ----- pythemis secure session tests----" >> ./$(BIN_PATH)/tests/pythemis_test.sh
 	@echo "python3 ./tests/pythemis/ssession_test.py" >> ./$(BIN_PATH)/tests/pythemis_test.sh
-ifdef SECURE_COMPARATOR_ENABLED
 	@echo "python3 ./tests/pythemis/scomparator_test.py" >> ./$(BIN_PATH)/tests/pythemis_test.sh
-endif
 endif
 	@chmod a+x ./$(BIN_PATH)/tests/pythemis_test.sh
 	@$(PRINT_OK_)
 endif
-#ifdef NODE_VERSION
-#	echo "cd ./tests/jsthemis/" > ./$(BIN_PATH)/tests/node.sh
-#	echo "npm install ../../build/jsthemis-0.0.3.tgz" >> ./$(BIN_PATH)/tests/node.sh
-#	echo "mocha" >> ./$(BIN_PATH)/tests/node.sh
-#	chmod a+x ./$(BIN_PATH)/tests/node.sh
-#endif
-
-
+	echo "cd ./tests/jsthemis/" > ./$(BIN_PATH)/tests/node.sh
+	echo "wget https://nodejs.org/dist/v4.6.0/node-v4.6.0-linux-x64.tar.gz" >> ./$(BIN_PATH)/tests/node.sh
+	echo "tar -xvf node-v4.6.0-linux-x64.tar.gz" >> ./$(BIN_PATH)/tests/node.sh
+	echo "cd ../../src/wrappers/themis/jsthemis && PATH=`pwd`/tests/jsthemis/node-v4.6.0-linux-x64/bin:$(PATH) npm pack && mv jsthemis-0.9.4.tgz ../../../../build && cd -" >> ./$(BIN_PATH)/tests/node.sh
+	echo "PATH=`pwd`/tests/jsthemis/node-v4.6.0-linux-x64/bin:$(PATH) npm install mocha" >> ./$(BIN_PATH)/tests/node.sh
+	echo "PATH=`pwd`/tests/jsthemis/node-v4.6.0-linux-x64/bin:$(PATH) npm install nan" >> ./$(BIN_PATH)/tests/node.sh
+	echo "PATH=`pwd`/tests/jsthemis/node-v4.6.0-linux-x64/bin:$(PATH) npm install ../../build/jsthemis-0.9.4.tgz" >> ./$(BIN_PATH)/tests/node.sh
+	echo "PATH=`pwd`/tests/jsthemis/node-v4.6.0-linux-x64/bin:$(PATH) ./node_modules/mocha/bin/mocha" >> ./$(BIN_PATH)/tests/node.sh
+	chmod a+x ./$(BIN_PATH)/tests/node.sh
 
 soter_static: CMD = $(AR) rcs $(BIN_PATH)/lib$(SOTER_BIN).a $(SOTER_OBJ)
 
@@ -391,5 +385,3 @@ themispp_uninstall:
 	@echo -n "themispp uninstall "
 	@$(BUILD_CMD_)
 
-#jsthemis_install:
-#	cd src/wrappers/themis/jsthemis && mv `npm pack` ../../../../build/

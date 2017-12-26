@@ -21,8 +21,8 @@
 #ifndef THEMIS_H
 #define THEMIS_H
 
-#include <stdint.h>
 #include <stddef.h>
+#include <stdint.h>
 
 /**
  * @defgroup THEMIS Themis
@@ -32,32 +32,13 @@
 
 #define THEMIS_VERSION_TEXT "themis 0.9: "
 
-#include <themis/themis_error.h>
-#include <themis/secure_message.h>
 #include <themis/secure_cell.h>
-#include <themis/secure_session.h>
 #include <themis/secure_comparator.h>
+#include <themis/secure_message.h>
+#include <themis/secure_session.h>
+#include <themis/themis_error.h>
 
-const char* themis_version(void);
+const char *themis_version(void);
 
 /** @} */
 #endif /* THEMIS_H */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

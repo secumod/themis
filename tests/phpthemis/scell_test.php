@@ -20,7 +20,7 @@
          */
 	public function testSealWithContext($key, $message, $context, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message = phpthemis_scell_seal_encrypt($key, $message, $context);
 	    $decrypted_message = phpthemis_scell_seal_decrypt($key, $encrypted_message, $context);
@@ -47,7 +47,7 @@
          */
 	public function testSealWithContextNoDecrypt($key, $message, $context, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message = phpthemis_scell_seal_encrypt($key, $message, $context);
 	    $decrypted_message = phpthemis_scell_seal_decrypt($key+"a", $encrypted_message, $context);
@@ -73,7 +73,7 @@
          */
 	public function testSealWithoutContext($key, $message, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message = phpthemis_scell_seal_encrypt($key, $message);
 	    $decrypted_message = phpthemis_scell_seal_decrypt($key, $encrypted_message);
@@ -97,7 +97,7 @@
          */
 	public function testTokenProtectWithContext($key, $message, $context, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message =  phpthemis_scell_token_protect_encrypt($key, $message, $context);
 	    $decrypted_message =  phpthemis_scell_token_protect_decrypt($key, $encrypted_message['encrypted_message'],  $encrypted_message['token'], $context);
@@ -123,7 +123,7 @@
          */
 	public function testTokenProtectWithContextNoDecrypt($key, $message, $context, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message =  phpthemis_scell_token_protect_encrypt($key, $message, $context);
 	    $decrypted_message =  phpthemis_scell_token_protect_decrypt($key+"a", $encrypted_message['encrypted_message'],  $encrypted_message['token'], $context);
@@ -143,7 +143,7 @@
          */
 	public function testTokenProtectWithContextNoToken($key, $message, $context, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message =  phpthemis_scell_token_protect_encrypt($key, $message, $context);
 	    $decrypted_message =  phpthemis_scell_token_protect_decrypt($key, $encrypted_message['encrypted_message'],  $encrypted_message['token']+"a", $context);
@@ -162,7 +162,7 @@
          */
 	public function testTokenProtectWithoutContext($key, $message, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message =  phpthemis_scell_token_protect_encrypt($key, $message);
 	    $decrypted_message =  phpthemis_scell_token_protect_decrypt($key, $encrypted_message['encrypted_message'],  $encrypted_message['token']);
@@ -186,7 +186,7 @@
          */
 	public function testContextImprint($key, $message, $context, $iscorrect){
 	    if(!$iscorrect){
-		$this->setExpectedException('Exception');
+		$this->expectException('Exception');
 	    }
 	    $encrypted_message =  phpthemis_scell_context_imprint_encrypt($key, $message, $context);
 	    $decrypted_message =   phpthemis_scell_context_imprint_decrypt($key, $encrypted_message, $context);

@@ -38,7 +38,7 @@ jobs:
       # don't fetch if was cached
       - restore_cache:
           key: valgrind-3.13.0
-      - run: [ -d $VALGRIND_BUILD_PATH ] || (cd $HOME && wget ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2 && tar -xjf valgrind-3.13.0.tar.bz2 && cd valgrind-3.13.0 && ./configure --prefix=$VALGRIND_BUILD_PATH && make && sudo make install)
+      - run: [ -d "$VALGRIND_BUILD_PATH" ] || (cd $HOME && wget ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2 && tar -xjf valgrind-3.13.0.tar.bz2 && cd valgrind-3.13.0 && ./configure --prefix=$VALGRIND_BUILD_PATH && make && sudo make install)
       - save_cache:
           key: valgrind-3.13.0
           paths:
@@ -53,7 +53,7 @@ jobs:
       - run: sudo make phpthemis_install
       - restore_cache:
           key: boringssl-chromium-stable
-      - run: [ -d $BORINGSSL_PATH ] || (cd $HOME && git clone https://boringssl.googlesource.com/boringssl && cd boringssl && git checkout chromium-stable && mkdir build && cd build && cmake .. && make && cp decrepit/libdecrepit.a crypto/)
+      - run: [ -d "$BORINGSSL_PATH" ] || (cd $HOME && git clone https://boringssl.googlesource.com/boringssl && cd boringssl && git checkout chromium-stable && mkdir build && cd build && cmake .. && make && cp decrepit/libdecrepit.a crypto/)
       - save_cache:
           key: boringssl-chromium-stable
           paths:

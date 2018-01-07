@@ -71,7 +71,7 @@ jobs:
 
 workflows:
   version: 2
-  android:
+  tests:
     jobs:
       - android
       - x86_64

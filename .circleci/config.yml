@@ -62,7 +62,7 @@ jobs:
           keys:
             - boringssl-chromium-stable
 
-      - run: [ ! -d "$BORINGSSL_PATH" ] && cd $HOME && git clone https://boringssl.googlesource.com/boringssl && cd boringssl && git checkout chromium-stable && mkdir build && cd build && cmake .. && make && cp decrepit/libdecrepit.a crypto/
+      - run: if [ ! -d "$BORINGSSL_PATH" ]; then cd $HOME && git clone https://boringssl.googlesource.com/boringssl && cd boringssl && git checkout chromium-stable && mkdir build && cd build && cmake .. && make && cp decrepit/libdecrepit.a crypto/; fi
 
       - save_cache:
           key: boringssl-chromium-stable

@@ -21,7 +21,7 @@ class SmessageTest extends PHPUnit_Framework_TestCase{
          */
     public function testEncryptionDecryption($private_key, $public_key, $message, $iscorrect){
         if(!$iscorrect){
-	    $this->expectException('Exception');
+	    $this->expectException(Error:class);
         }
         $encrypted_message = phpthemis_secure_message_wrap($private_key, $public_key, $message);
         $decrypted_message = phpthemis_secure_message_unwrap($private_key, $public_key, $encrypted_message);
@@ -59,7 +59,7 @@ class SmessageTest extends PHPUnit_Framework_TestCase{
          */
     public function testEncryptionNoDecryption($private_key, $public_key, $message, $iscorrect){
         if(!$iscorrect){
-	    $this->expectException('Exception');
+	    $this->expectException(Error:class);
         }
         $encrypted_message = phpthemis_secure_message_wrap($private_key, $public_key, $message);
         $decrypted_message = phpthemis_secure_message_unwrap($private_key+"a", $public_key, $encrypted_message);
@@ -90,7 +90,7 @@ class SmessageTest extends PHPUnit_Framework_TestCase{
          */
     public function testSignVerify($private_key, $public_key, $message, $iscorrect){
         if(!$iscorrect){
-	    $this->expectException('Exception');
+	    $this->expectException(Error:class);
         }
         $encrypted_message = phpthemis_secure_message_wrap($private_key, NULL, $message);
         $decrypted_message = phpthemis_secure_message_unwrap($private_key, $public_key, $encrypted_message);
@@ -128,7 +128,7 @@ class SmessageTest extends PHPUnit_Framework_TestCase{
          */
     public function testSignNoVerify($private_key, $public_key, $message, $iscorrect){
         if(!$iscorrect){
-	    $this->expectException('Exception');
+	    $this->expectException(Error:class);
         }
         $encrypted_message = phpthemis_secure_message_wrap($private_key, NULL, $message);
         $decrypted_message = phpthemis_secure_message_unwrap($private_key, $public_key+"a", $encrypted_message);

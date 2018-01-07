@@ -36,7 +36,7 @@ jobs:
       # download last valgrind because current version of valgrind on ubuntu (3.11.0) gives false positive errors
       # link from http://valgrind.org/downloads/current.html
       # don't fetch if was cached
-      - run: if [ ! -d $VALGRIND_BUILD_PATH ]; then wget ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2 && tar -xjf valgrind-3.13.0.tar.bz2 && cd valgrind-3.13.0 && ./configure --prefix=$VALGRIND_BUILD_PATH && make && sudo make install; fi
+      - run: if [ ! -d $VALGRIND_BUILD_PATH ]; then cd $HOME && wget ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2 && tar -xjf valgrind-3.13.0.tar.bz2 && cd valgrind-3.13.0 && ./configure --prefix=$VALGRIND_BUILD_PATH && make && sudo make install; fi
       - checkout
       - run: make
       - run: make JAVA_HOME=/usr/lib/jvm/default-java themis_jni

@@ -23,6 +23,11 @@ jobs:
   x86_64:
     docker:
       - image: cossacklabs/android-build
+    environment:
+      GOTHEMIS_IMPORT: github.com/cossacklabs/themis/gothemis
+      VALGRIND_BUILD_PATH: $HOME/valgrind
+      CFLAGS: "-DCIRICLE_TEST"
+      BORINGSSL_PATH: "$HOME/boringssl"
     steps:
       - run: sudo apt-get update && sudo DEBIAN_FRONTEND=noninteractive apt-get -y install php libssl-dev python python-setuptools python3 python3-setuptools ruby-dev lcov libc6-dbg
       - run: sudo ln -sf /usr/bin/gcov-4.9 /usr/bin/gcov

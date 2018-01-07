@@ -36,7 +36,13 @@ jobs:
       # download last valgrind because current version of valgrind on ubuntu (3.11.0) gives false positive errors
       # link from http://valgrind.org/downloads/current.html
       # don't fetch if was cached
+      - restore_cache:
+          key: valgrind-3.13.0
       - run: if [ ! -d $VALGRIND_BUILD_PATH ]; then cd $HOME && wget ftp://sourceware.org/pub/valgrind/valgrind-3.13.0.tar.bz2 && tar -xjf valgrind-3.13.0.tar.bz2 && cd valgrind-3.13.0 && ./configure --prefix=$VALGRIND_BUILD_PATH && make && sudo make install; fi
+      - save_cache:
+          key: valgrind-3.13.0
+          paths:
+            - ~/valgrind
       - checkout
       - run: make
       - run: make JAVA_HOME=/usr/lib/jvm/default-java themis_jni
@@ -45,7 +51,13 @@ jobs:
       - run: sudo make pythemis_install
       - run: sudo make rubythemis_install
       - run: sudo make phpthemis_install
+      - restore_cache:
+          key: boringssl-chromium-stable
       - run: if [ ! -d $BORINGSSL_PATH ]; then cd $HOME && git clone https://boringssl.googlesource.com/boringssl && cd boringssl && git checkout chromium-stable && mkdir build && cd build && cmake .. && make && cp decrepit/libdecrepit.a crypto/; fi
+      - save_cache:
+          key: boringssl-chromium-stable
+          paths:
+            - ~/boringssl
       - run: make ENGINE=boringssl ENGINE_INCLUDE_PATH=$HOME/boringssl/include ENGINE_LIB_PATH=$HOME/boringssl/build/crypto BUILD_PATH=build_with_boringssl prepare_tests_basic
       - run: make BUILD_PATH=cover_build COVERAGE=y prepare_tests_basic
       - run: make prepare_tests_all
